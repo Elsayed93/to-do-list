@@ -1,0 +1,9 @@
+table {
+  text-align: center;
+  border: solid;
+}
+
+table,td {
+    /* text-align: center; */
+    border:solid #d6d5d5 1px;
+  }

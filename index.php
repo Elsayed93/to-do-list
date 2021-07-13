@@ -7,31 +7,7 @@ require_once 'includes/header.php';
 
 
     <div class="container mt-5">
-        <?php
-
-        if (isset($_SESSION['added']) && $_SESSION['added'] === true) {
-        ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="alert alert-success" role="alert">
-                        Task has been added successfully
-                    </div>
-                </div>
-            </div>
-        <?php
-            unset($_SESSION['added']);
-        } elseif (isset($_SESSION['added']) && $_SESSION['added'] === false) {
-        ?>
-            <div class="row">
-                <div class="col-md-6">
-                    <div class="alert alert-danger" role="alert">
-                        Task has Not been added successfully
-                    </div>
-                </div>
-            </div>
-        <?php
-        }
-        ?>
+        <?php require_once 'includes/sessionMessages.php'; ?>
 
         <div class="row">
             <div class="col-md-6">
@@ -41,46 +17,65 @@ require_once 'includes/header.php';
 
         <!-- tasks table -->
         <div class="row mt-5">
-            <table class="table">
-                <thead class="table-dark">
-                    <tr>
-                        <th scope="col">#</th>
-                        <th scope="col">Task Name</th>
-                        <th scope="col">Status</th>
-                        <th scope="col">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    require_once 'includes/DbConnection.php';
+            <div class="col-md-8">
 
-                    $fetchTasksQuery = $db->query("SELECT * FROM `tasks`");
-                    $allTasks = $fetchTasksQuery->fetchAll(PDO::FETCH_ASSOC);
 
-                    foreach ($allTasks as $row) {
-                    ?>
+                <table class="table">
+                    <thead class="table-dark">
                         <tr>
-                            <th scope="row"><?php echo $row['id'] ?></th>
-                            <td><?php echo $row['name'] ?></td>
-                            <td>
-                                <?php if ($row['is_complete'] == 1) {
-                                ?>
-                                    <button type="button" class="btn btn-success btn-sm">Completed</button>
-                                <?php
-                                }
-                                ?>
-                                <button type="button" class="btn btn-info btn-sm">Not Completed</button>
-                            </td>
-                            <td>
-                                <button type="button" class="btn btn-warning btn-sm">Edite</button>
-                                <button type="button" class="btn btn-danger btn-sm">Delete</button>
-                            </td>
+                            <th scope="col">ID</th>
+                            <th scope="col">Task Name</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Actions</th>
                         </tr>
-                    <?php
-                    }
-                    ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php
+                        require_once 'includes/DbConnection.php';
+
+                        $fetchTasksQuery = $db->query("SELECT * FROM `tasks`");
+                        $allTasks = $fetchTasksQuery->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach ($allTasks as $row) {
+                        ?>
+                            <tr>
+                                <th scope="row"><?php echo $row['id'] ?></th>
+                                <td><?php echo $row['name'] ?></td>
+                                <td>
+                                    <?php if ($row['is_complete'] == 1) {
+                                    ?>
+                                        <div class="alert alert-success" role="alert">
+                                            Completed
+                                        </div>
+                                    <?php
+                                    } else {
+                                    ?>
+                                        <div class="alert alert-warning" role="alert">
+                                            Not Completed
+                                        </div>
+                                    <?php
+                                    }
+                                    ?>
+
+                                </td>
+                                <td>
+                                    <a href="controllers/Tasks/edit.php?id=<?php echo $row['id'] ?>" class="btn btn-warning ">Edite</a>
+                                    <a href="controllers/Tasks/delete.php?id=<?php echo $row['id'] ?>" class="btn btn-danger ">Delete</a>
+                                    <?php
+                                    if ($row['is_complete'] == 0) {
+                                    ?>
+                                        <a href="controllers/Tasks/completeTask.php?id=<?php echo $row['id'] ?>" class="btn btn-dark ">Complete task</a>
+                                    <?php
+                                    }
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
